@@ -1,3 +1,10 @@
+#should include 
+# - pod
+# - deployment config with env variables 
+# - service 
+# - route 
+# 
+
 apiVersion: v1
 kind: Template
 metadata:

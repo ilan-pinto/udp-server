@@ -10,7 +10,7 @@ class SampleApp:
         self.leader_ip = leader_ip
         self.leader_port = leader_port
         self.server = serverSocket
-        self.my_ip = os.environ.get('MY_POD_ID') # should be defined in the service yaml 
+        self.my_ip = os.environ.get('MY_POD_ID') # should be defined in the deployment yaml 
         if self.leader_ip is None: 
             logging.info('leader ip is none useing default ')
 
@@ -38,9 +38,13 @@ class SampleApp:
 
         if self.am_i_leader == True: 
               logging.info('Leader {} ***processed*** messsge'.format(self.my_ip) )
+        elif self.leader_port is None : 
+            logging.warning('NO Leder configured')
+                 
         else: 
-            # route to leader
-            self.server.sendto(msg,(self.leader_ip,PORT))  
+            # route to leader            
+            self.server.sendto(msg,(self.leader_ip,PORT)) 
+            logging.info('Routed messsage to leader') 
 
 
 

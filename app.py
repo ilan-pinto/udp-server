@@ -44,9 +44,9 @@ while(True):
     try:
         app.process_message(message)
     except Exception as e :
-        logging.error( e.message)
+        logging.error(e)
           
 
 
-
+s
 
