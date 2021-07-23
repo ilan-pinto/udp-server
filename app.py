@@ -27,7 +27,7 @@ serverSocket = socket(AF_INET, SOCK_DGRAM)
 serverSocket.bind(('', PORT))
 
 logging.info("UDP server up and listening")
-app = SampleApp.SampleApp(serverSocket,os.environ.get('LEADER_IP'),os.environ.get('LEADER_PORT'))
+app = SampleApp.SampleApp(serverSocket,os.environ.get('LEADER_IP'))
 while(True):
     
     bytesAddressPair = serverSocket.recvfrom(1024)
