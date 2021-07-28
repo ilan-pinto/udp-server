@@ -1,6 +1,5 @@
 FROM nginx
 RUN apt update 
-RUN apt install net-tools -y
-RUN apt install dnsutils -y
+RUN apt install net-tools iputils-ping install dnsutils socat netcat -y
 ENTRYPOINT ["tail"]
 CMD ["-f","/dev/null"]

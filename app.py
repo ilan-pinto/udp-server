@@ -5,7 +5,9 @@ import os
 import SampleApp
 import logging
 import sys
-from Config import PORT
+import struct 
+
+from Config import PORT , MCAST_GRP
 
 
 
@@ -20,15 +22,19 @@ handler.setFormatter(formatter)
 root.addHandler(handler) 
 
 
+
 # Create a UDP socket
 serverSocket = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP)
 serverSocket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 
 # Enable broadcasting mode
-serverSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+# serverSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
 # Assign IP address and port number to socket
 serverSocket.bind(('', PORT))
+mreq = struct.pack('4sl', socket.inet_aton(MCAST_GRP), socket.INADDR_ANY)
+serverSocket.setsockopt(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
+
 
 logging.info("UDP server up and listening")
 app = SampleApp.SampleApp(serverSocket,os.environ.get('LEADER_IP'))
