@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-udp-server
+  namespace: ilpinto
+spec:
+  selector:
+    matchLabels:
+      deployment: statefulset-udp-server-v2
+  serviceName: statefulset-udp
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        deployment: statefulset-udp-server-v2
+    spec:
+      containers:
+      - name: udp-server
+        image: image-registry.openshift-image-registry.svc:5000/ilpinto/udp-server-v2
+        ports:
+        - containerPort: 12000
+          protocol: UDP
+        env:
+        - name: PORT
+          value: '12000'
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP

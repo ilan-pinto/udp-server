@@ -21,7 +21,11 @@ root.addHandler(handler)
 
 
 # Create a UDP socket
-serverSocket = socket(AF_INET, SOCK_DGRAM)
+serverSocket = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP)
+serverSocket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+
+# Enable broadcasting mode
+serverSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
 # Assign IP address and port number to socket
 serverSocket.bind(('', PORT))

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: utill-nginx
+  labels:
+    name: utill
+spec:
+  containers:
+  - name: utill
+    image: quay.io/ilan_pinto/utill-nginx
