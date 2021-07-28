@@ -32,7 +32,7 @@ serverSocket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 
 # Assign IP address and port number to socket
 serverSocket.bind(('', PORT))
-mreq = struct.pack('4sl', socket.inet_aton(MCAST_GRP), socket.INADDR_ANY)
+mreq = struct.pack('4sl', inet_aton(MCAST_GRP), INADDR_ANY)
 serverSocket.setsockopt(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
 
 
