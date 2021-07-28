@@ -32,6 +32,9 @@ all the pods will recive the message and will update the leader localy
 >  oc new-app git@github.com:{github_user_name}/udp-server.git --source-secret={secret_name} --name=udp-server
 6. modify deployment yaml port protocol to UDP 
 6. modify server yaml to use NodePort and  protocol to UDP 
+6. enable multi cast - https://docs.openshift.com/container-platform/4.7/networking/ovn_kubernetes_network_provider/enabling-multicast.html 
+
+
 
 ### How to test 
 On your local computer use the following comman
