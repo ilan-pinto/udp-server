@@ -62,16 +62,10 @@ node_name - can be found in the UI on the pod left bottom of the details tab . o
 
 
 
+### notes 
+- headless service only picks the first DNS it Doesn’t to all pods -https://faun.pub/kubernetes-headless-service-vs-clusterip-and-traffic-distribution-904b058f0dfd 
 
-### commnuitcate 
-use your terminal for sending commands to the UDP server 
-using nc command 
-
-nc [protocl] [ip] [port]
-example nc -u 127.0.0.1 12000
-and then type command 
-
-Udp server diagram 
+- Headless services still provide load balancing across pods but through the DNS round-robin mechanism instead of through the service proxy.
 
 
 

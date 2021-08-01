@@ -26,14 +26,15 @@ root.addHandler(handler)
 # Create a UDP socket
 serverSocket = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP)
 serverSocket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+serverSocket.bind(('', PORT)) 
 
 # Enable broadcasting mode
 # serverSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
 
 # Assign IP address and port number to socket
-serverSocket.bind(('', PORT))
-mreq = struct.pack('4sl', inet_aton(MCAST_GRP), INADDR_ANY)
-serverSocket.setsockopt(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
+
+# mreq = struct.pack('4sl', inet_aton(MCAST_GRP), INADDR_ANY)
+# serverSocket.setsockopt(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
 
 
 logging.info("UDP server up and listening")
