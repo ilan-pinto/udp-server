@@ -1,37 +1,76 @@
-#should include 
-# - pod
-# - deployment config with env variables 
-# - service 
-# - route 
-# 
-
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: headless-udp 
+  name: udp-broadcasting 
   annotations:
     description: "UDP server is sample for headless service on OpenShift/kubernetes."
     iconClass: "icon-python"
     tags: ""
 objects:
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: statefulset-udp-server
+    
+  spec:
+    selector:
+      matchLabels:
+        deployment: statefulset-udp-server
+    serviceName: statefulset-udp
+    replicas: 2
+    template:
+      metadata:
+        labels:
+          deployment: statefulset-udp-server
+      spec:
+        containers:
+        - name: udp-server
+          image: image-registry.openshift-image-registry.svc:5000/ilpinto/udp-server-v2
+          ports:
+          - containerPort: 12000
+            protocol: UDP
+          env:
+          - name: PORT
+            value: '12000'
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
 - apiVersion: v1
   kind: Pod
   metadata:
-    name: udp-server
+    name: sender-app
+    labels:
+      name: sender-app
   spec:
     containers:
-    - env:
-      - name: REDIS_PASSWORD
-        value: ${REDIS_PASSWORD}
-      image: dockerfile/redis
-      name: master
-      ports:
-      - containerPort: 12000
-        protocol: UDP
-parameters:
-- description: Password used for Redis authentication
-  from: '[A-Z0-9]{8}'
-  generate: expression
-  name: REDIS_PASSWORD
-labels:
-  redis: master
+    - name: sender-app
+      image: quay.io/ilan_pinto/senderapp  
+- apiVersion: v1
+  kind: Service
+  
+  metadata:
+    name:  headless-udp
+  spec:
+    selector:
+      deployment: statefulset-udp-server
+    clusterIP: None
+    clusterIPs:
+      - None
+    type: ClusterIP
+    ports:
+      - protocol: UDP
+        port: 12000
+        targetPort: 12000
+             

@@ -2,14 +2,21 @@
 # UDP Headless Server 
 
 UDP server is sample for headless service on OpenShift/kubernetes.
-every time a message is published to the service it is not load blanced but sent out to all pods.
+Headless service exposes all DNS hosts which are basicly the pods liked to the service. 
+a service can broadcast to all pods by using nslookup on the service name 
+- [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) 
+- [Discovering Running Pods By Using DNS and Headless Services in Kubernetes](https://medium.com/swlh/discovering-running-pods-by-using-dns-and-headless-services-in-kubernetes-7002a50747f4) 
+
+
+
+
 
 ## Use case 
-A UDP based ecosystem that processed messages. 
-incommeing messages are sent out to all of the services but only "leader" service can replay. 
-In this case every service should be aware who the "leader" pod   
+after deploying this example you will have two apps: 
+- sender-app - a python script that gets 2 params: service name, message to broadcast. sender app will discover all the hosts dns broadcast the message to all hosts.   
+- reciver-app - a python app that listens on port 12000 and process recived messages 
 
-## Server Features 
+## Reciver-App Features 
 
 - A leader is selected externaly  by adding a specfic IP in the YAMl file or by sending the below UDP messag to the SVC 
 all the pods will recive the message and will update the leader localy  
@@ -22,8 +29,25 @@ all the pods will recive the message and will update the leader localy
 ## How to? 
 
 ### How to deploy? 
+1. clone this repo to your github
+1. login to OpenShift using the `oc login` command 
+1. create new project using the `oc new-project` command 
+1. deploy the template `oc create -f deployments/Deploy.yaml`
+1. process template and deploy `oc process udp-broadcasting | oc create -f -`
+1. login to the sender pod `oc exec -i -t sender-app -- sh` 
+1. broadcast message in the network `python app.py -s headless-udp -m 'brodacsting'` 
+you should see a meesage like this 
+    >   2021-08-02 12:44:46,383 - root - INFO - sent message to :10.128.5.167
+    >   2021-08-02 12:44:46,383 - root - INFO - sent message to :10.128.5.165
+1. check logs of udp pods `oc logs statefulset-udp-server-0` , `oc logs statefulset-udp-server-1`
+in the logs you should see 
+    >   2021-08-02 12:44:46,386 - root - INFO - got message:b'brodacsting' 
 
-#### On open shift 
+
+
+
+
+<!-- #### On open shift 
 1. clone this repo to your github
 1. login to OpenShift using the `oc login` command 
 1. create new project using the `oc new-project` command 
@@ -32,16 +56,15 @@ all the pods will recive the message and will update the leader localy
 >  oc new-app git@github.com:{github_user_name}/udp-server.git --source-secret={secret_name} --name=udp-server
 6. modify deployment yaml port protocol to UDP 
 6. modify server yaml to use NodePort and  protocol to UDP 
-6. enable multi cast - https://docs.openshift.com/container-platform/4.7/networking/ovn_kubernetes_network_provider/enabling-multicast.html 
+6. enable multi cast - https://docs.openshift.com/container-platform/4.7/networking/ovn_kubernetes_network_provider/enabling-multicast.html  
 
 
-
-### How to test 
+ ### How to test 
 On your local computer use the following comman
 > nc -u {node_name} {port}
 
 node_name - can be found in the UI on the pod left bottom of the details tab . or using the following command 
-> oc get pod {pod_name} -o jsonpath='{range .items[*]}{.spec.nodeName}{"\n"}' 
+> oc get pod {pod_name} -o jsonpath='{range .items[*]}{.spec.nodeName}{"\n"}'  -->
 
 
 **TBD**
