@@ -25,7 +25,7 @@ objects:
       spec:
         containers:
         - name: udp-server
-          image: image-registry.openshift-image-registry.svc:5000/ilpinto/udp-server-v2
+          image: quay.io/ilan_pinto/reciverapp
           ports:
           - containerPort: 12000
             protocol: UDP
@@ -58,8 +58,7 @@ objects:
     - name: sender-app
       image: quay.io/ilan_pinto/senderapp  
 - apiVersion: v1
-  kind: Service
-  
+  kind: Service  
   metadata:
     name:  headless-udp
   spec:

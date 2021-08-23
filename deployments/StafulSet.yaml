@@ -1,22 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: statefulset-udp-server
-  namespace: ilpinto
+  name: statefulset-udp-server  
 spec:
   selector:
     matchLabels:
-      deployment: statefulset-udp-server-v2
+      deployment: statefulset-udp-server
   serviceName: statefulset-udp
   replicas: 2
   template:
     metadata:
       labels:
-        deployment: statefulset-udp-server-v2
+        deployment: statefulset-udp-server
     spec:
       containers:
       - name: udp-server
-        image: image-registry.openshift-image-registry.svc:5000/ilpinto/udp-server-v2
+        image: quay.io/ilan_pinto/reciverapp
         ports:
         - containerPort: 12000
           protocol: UDP
