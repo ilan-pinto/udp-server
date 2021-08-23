@@ -1,8 +1,6 @@
 
-
 from socket import *
 import os
-import SampleApp
 import logging
 import sys
 import struct 
@@ -10,7 +8,7 @@ import struct
 from Config import PORT , MCAST_GRP
 
 
-
+my_ip = os.environ.get('MY_POD_ID')
 
 #configure log
 root = logging.getLogger()
@@ -27,37 +25,19 @@ root.addHandler(handler)
 serverSocket = socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP)
 serverSocket.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
 serverSocket.bind(('', PORT)) 
-
-# Enable broadcasting mode
-# serverSocket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-
-# Assign IP address and port number to socket
-
-# mreq = struct.pack('4sl', inet_aton(MCAST_GRP), INADDR_ANY)
-# serverSocket.setsockopt(IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
-
-
 logging.info("UDP server up and listening")
-app = SampleApp.SampleApp(serverSocket,os.environ.get('LEADER_IP'))
-while(True):
-    
+
+while(True):    
     bytesAddressPair = serverSocket.recvfrom(1024)
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
     clientMsg = "Message from Client:{}".format(message)
     clientIP  = "Client IP Address:{}".format(address)    
-    logging.info(clientMsg)
-    logging.info(clientIP)
+    logging.info(clientMsg + ' ' + clientIP )
+    logging.info(" {} starting to process message {} ".format(my_ip, message ))
 
-
-    logging.info(" {} starting to process message ".format(app.my_ip))
-
-    try:
-        app.process_message(message)
-    except Exception as e :
-        logging.error(e)
           
 
 
-s
+
 

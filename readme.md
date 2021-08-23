@@ -16,17 +16,21 @@ after deploying this example you will have two apps:
 - sender-app - a python script that gets 2 params: service name, message to broadcast. sender app will discover all the hosts dns broadcast the message to all hosts.   
 - reciver-app - a python app that listens on port 12000 and process recived messages 
 
-## Reciver-App Features 
-
-- A leader is selected externaly  by adding a specfic IP in the YAMl file or by sending the below UDP messag to the SVC 
-all the pods will recive the message and will update the leader localy  
-    >    {"leader": "{IP}" }
-
-- All the Pods will than update localy the leader ip 
-- All the Pods routing the message to the leader 
 
 
 ## How to? 
+
+
+### Testing on your local computer 
+for testing the reciver app on your local computer:
+note! the below commad is not using a headless service. 
+
+1. start the reciver app `python reciver-app/app.py` 
+1. open a secound terminal and exec the `nc -u 127.0.0.1 12000`
+1. every line will be sent to the reciver-app
+
+### Containerizing the apps 
+
 
 ### How to deploy? 
 1. clone this repo to your github
